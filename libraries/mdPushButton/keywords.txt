@@ -1,0 +1,7 @@
+mdPushButton	KEYWORD1
+status	KEYWORD2
+setDebouncePressTime	KEYWORD2
+setDebounceReleaseTime	KEYWORD2
+setMutiClickTime	KEYWORD2
+setHoldTime	KEYWORD2
+OnButtonClicked	KEWORD2

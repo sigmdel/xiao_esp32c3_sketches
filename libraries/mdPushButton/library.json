@@ -1,0 +1,12 @@
+{
+    "name": "mdPushButton",
+    "description": "Push button library for Arduino",
+    "keywords": "push button",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sigmdel/mdPushButton"
+    },
+    "frameworks": "arduino",
+    "platforms": "*",
+    "version": "0.1.3"
+}

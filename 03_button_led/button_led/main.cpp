@@ -2,7 +2,7 @@
 // Copyright: see notice in button_led.ino
 
 #include <Arduino.h>       // Needed in platformIO
-#include "mdPushButton.h"  
+#include "mdPushButton.h"
 
 // Connecting an external LED:
 //  The diode's cathode (-, usually the short lead on the flat side of the LED) is connected to GND.
@@ -18,9 +18,9 @@ void toggleLed() {
 
 // Connecting an external button:
 //  Because an internal pullup resistor will be enabled, connect one lead of a normally
-//  open push button to ground and the other lead to a free I/O pin, D1 here.
+//  open push button to ground and the other lead to a free I/O pin, D9 here.
 //
-mdPushButton button = mdPushButton(D1);
+mdPushButton button = mdPushButton(D9);
 
 void setup() {
   // Set the digital pin connected to the LED as an output

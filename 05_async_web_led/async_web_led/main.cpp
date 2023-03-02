@@ -5,7 +5,7 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>            // See: Note on Location of Async Libraries
 #include <ESPAsyncWebServer.h>   // See: Note on Location of Async Libraries
-#include "webresponses.h"
+#include "html.h"
 #include "secrets.h"
 
 /*********************************************************************************************************************************
@@ -41,22 +41,35 @@ Arduino Preferences.
 //
 int led = D10;
 
-String ledState = "off";
+int ledState = 0;
+String ledStatus = "OFF";
 
 void setLed(int value) {
   digitalWrite(led, value);
-  ledState = (digitalRead(led) ? "on" : "off");
-  Serial.printf("LED now %s.\n", ledState.c_str());
+  ledState = value;
+  ledStatus = (digitalRead(led) ? "ON" : "OFF");
+  Serial.printf("LED now %s.\n", ledStatus);
+  assert(ledState == digitalRead(led));
 }
 
+void toggleLed(void) {
+  setLed(1-ledState);
+}
+
+// Webserver instance using default HTTP port 80
 AsyncWebServer server(80);
 
-const char* PARAM_MESSAGE = "led";
-
-void notFound(AsyncWebServerRequest *request) {
-    request->send(404, "text/html", HttpPage(true, 0));
+// Template substitution function
+String processor(const String& var){
+  if (var == "LEDSTATUS") return String(ledStatus);
+  if (var == "SERVERNAME") return String("XIAO ESP32C3 WEB SERVER");
+  return String(); // empty string
 }
 
+// 404 error handler
+void notFound(AsyncWebServerRequest *request) {
+  request->send_P(404, "text/html", html_404, processor);
+}
 
 void setup() {
   // Set the digital pin connected to the LED as an output
@@ -81,26 +94,21 @@ void setup() {
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
 
+  // Setup and start Web server
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    bool valid = true;
-    //Serial.printf("Request has %d params\n", request->params());
-    if (request->hasParam(PARAM_MESSAGE)) {
-      String message;
-      message = request->getParam(PARAM_MESSAGE)->value();
-      //Serial.printf("hasParam(led), value=%s", message);
-      if (message=="toggle")
-        setLed(1 - digitalRead(led));
-      else
-        valid = false;
-    }
-    if (valid)
-      request->send(200, "text/html", HttpPage(false, digitalRead(led)));
-    else
-      notFound(request);
+    Serial.println("Index page requested");
+    request->send_P(200, "text/html", html_index, processor);
+  });
+  server.on("/led", HTTP_GET, [](AsyncWebServerRequest *request){
+    Serial.println("Web button pressed");
+    toggleLed();
+    request->send_P(200, "text/html", html_index, processor); // updates the client making the request only
   });
   server.onNotFound(notFound);
-
   server.begin();
+
+  setLed(0);
+  Serial.println("setup completed.");
 }
 
 void loop() {

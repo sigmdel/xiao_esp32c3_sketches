@@ -41,7 +41,7 @@ void iopins(void) {
 void setup() {
   Serial.begin();
   delay(1000); // 1 second delay should be sufficient for USB-CDC
-  Serial.println("Setup completed")
+  Serial.println("Setup completed");
 }
 
 void loop() {

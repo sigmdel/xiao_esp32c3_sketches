@@ -3,36 +3,9 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
-#include <AsyncTCP.h>            // See: Note on Location of Async Libraries
-#include <ESPAsyncWebServer.h>   // See: Note on Location of Async Libraries
+#include <ESPAsyncWebServer.h> 
 #include "html.h"
 #include "secrets.h"
-
-/*********************************************************************************************************************************
-Note on Location of Async libraries
-
-In both Arduino and PlatformIO, private copies of the AsyncTCP and ESPAsyncWebServer must be used for two reasons.
-
-1. The very latest version of the me-no-dev/ESP Async WebServer must be used. The latest stable version (1.2.3) obtained with
-   the PIO Libraries manager is incompatible with the latest version of md5.h.  This can be fixed by getting the development branch
-   https://github.com/me-no-dev/ESPAsyncWebServer.git
-   Ref: https://github.com/me-no-dev/ESPAsyncWebServer/issues/1147
-
-2. The IPAddress AsyncWebSocketClient::remoteIP() in .pio/libdeps/seeed_xiao_esp32c3/ESP Async WebServer/src/AsyncWebSocket.cpp
-   must be edited. The 0 null address returned if a client is not defined must be typecaset to uint32_t.
-      IPAddress AsyncWebSocketClient::remoteIP() {
-        if(!_client) {
-            return IPAddress((uint32_t) 0U);
-        }
-        return _client->remoteIP();
-      }
-   Reference: https://github.com/me-no-dev/ESPAsyncWebServer/issues/1164
-
-Placing both AsyncTCP and ESPAsyncWebServer in the scr subdirectory did not work in Arduino. The many #include <AsyncTCP.h> in
-EPSAsyncWebServer could not be resolved. The solution was to save both libraries in a directory named "libraries" as a sibling of
-the 05_ASYNC_WEB_LED and then to make their common parent directory xiao_esp32c3_sketches the Sketchbook location in the
-Arduino Preferences.
-***********************************************************************************************************************************/
 
 // Connecting an external LED:
 //  The diode's cathode (-, usually the short lead on the flat side of the LED) is connected to GND.
@@ -48,7 +21,7 @@ void setLed(int value) {
   digitalWrite(led, value);
   ledState = value;
   ledStatus = (digitalRead(led) ? "ON" : "OFF");
-  Serial.printf("LED now %s.\n", ledStatus);
+  Serial.printf("LED now %s.\n", ledStatus.c_str());
   assert(ledState == digitalRead(led));
 }
 
@@ -90,8 +63,7 @@ void setup() {
   }
   // Print local IP address and start web server
   Serial.println("");
-  Serial.println("WiFi connected.");
-  Serial.println("IP address: ");
+  Serial.print("WiFi connected with IP address: ");
   Serial.println(WiFi.localIP());
 
   // Setup and start Web server

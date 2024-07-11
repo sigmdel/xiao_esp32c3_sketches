@@ -52,7 +52,7 @@ void setup() {
   digitalWrite(led, 0);
 
   Serial.begin();
-  delay(1000);      // 1 second delay should be sufficient
+  delay(2000);      // 2 second delay should be sufficient
 
   // Connect to Wi-Fi network with SSID and password
   Serial.print("Connecting to ");
@@ -65,17 +65,15 @@ void setup() {
   }
   // Print local IP address and start web server
   Serial.println("");
-  Serial.println("WiFi connected.");
-  Serial.println("IP address: ");
+  Serial.print("WiFi connected with IP address: ");
   Serial.println(WiFi.localIP());
   server.begin();
 }
 
 void loop(){
-  WiFiClient client = server.available();   // Listen for incoming clients
-
+  WiFiClient client = server.accept();
   if (client) {                             // If a new client connects,
-    Serial.println("\nNew Client.");          // print a message out in the serial port
+    Serial.println("\nNew Client.");        // print a message out in the serial port
     String currentLine = "";                // make a String to hold incoming data from the client
     currentTime = millis();
     previousTime = currentTime;

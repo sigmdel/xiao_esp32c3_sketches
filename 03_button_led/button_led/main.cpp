@@ -1,33 +1,38 @@
 // Main module of blink_led PlatformIO/Arduino sketch
 // Copyright: see notice in button_led.ino
 
-#include <Arduino.h>       // Needed in platformIO
+#include <Arduino.h>
 #include "mdPushButton.h"
 
 // Connecting an external LED:
 //  The diode's cathode (-, usually the short lead on the flat side of the LED) is connected to GND.
 //  The diode's anode (+, usually the long lead on the round side of the LED) is connected to a
 //  current limiting 240 ohm resistor. The other lead of the resistor is connected to an I/O pin.
+//  See https://files.seeedstudio.com/wiki/XIAO_WiFi/connect-led-2.png
 //
-int led = D10;
+const int ledPin = D10;
+const int ledOn = HIGH;
 
 void toggleLed() {
-  digitalWrite(led, 1-digitalRead(led));
-  Serial.printf("LED now %s.\n", (digitalRead(led) ? "on" : "off"));
+  digitalWrite(ledPin, 1-digitalRead(ledPin));
+  Serial.printf("LED now %s.\n", (digitalRead(ledPin) == ledOn) ? "on" : "off");
 }
 
-// Connecting an external button:
-//  Because an internal pullup resistor will be enabled, connect one lead of a normally
-//  open push button to ground and the other lead to a free I/O pin, D9 here.
-//
+// Using the XIAO boot button. One pole is connected to I/O port 9 (also pin D9) and the other
+// pole is connected to ground. So when I/O pin is LOW, that means the button is pressed.
+// Because an with an external pull up resistor connected to 3.3V on I/O port 9, there is no
+// need to enable an internal pull up resistor.
+// mdPushButton button = mdPushButton(D9, LOW, false);
+// On the other hand it will not harm anything so the defaults can be used.
 mdPushButton button = mdPushButton(D9);
 
 void setup() {
-  // Set the digital pin connected to the LED as an output
-  pinMode(led, OUTPUT);
-
   Serial.begin();
-  delay(1000);      // 1 second delay should be sufficient for USB-CDC
+  delay(2000); // 2 second delay should be sufficient for USB-CDC
+
+  Serial.printf("Set the mode of I/O pin %d connected to the LED to OUTPUT\n", ledPin);
+  pinMode(ledPin, OUTPUT);
+
   Serial.println("Setup completed");
 }
 

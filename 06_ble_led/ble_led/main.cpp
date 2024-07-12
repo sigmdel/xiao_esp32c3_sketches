@@ -18,19 +18,21 @@
  *    IOS: https://apps.apple.com/us/app/lightblue/id557428110
  */
 
-#include <Arduino.h>     // Needed in PlatformIO
+#include <Arduino.h>
 #include <ArduinoBLE.h>
 
 // Connecting an external LED:
 //  The diode's cathode (-, usually the short lead on the flat side of the LED) is connected to GND.
 //  The diode's anode (+, usually the long lead on the round side of the LED) is connected to a
 //  current limiting 240 ohm resistor. The other lead of the resistor is connected to an I/O pin.
+//  See https://files.seeedstudio.com/wiki/XIAO_WiFi/connect-led-2.png
 //
-int led = D10;
+const int ledPin = D10;
+const int ledOn = HIGH;
 
 void setLed(int value) {
-  digitalWrite(led, value);
-  Serial.printf("LED now %s.\n", (digitalRead(led) ? "on" : "off"));
+  digitalWrite(ledPin, (value) ? ledOn : 1-ledOn);
+  Serial.printf("LED now %s.\n", (digitalRead(ledPin) == ledOn) ? "on" : "off");
 }
 
 // Bluetooth® Low Energy LED Service
@@ -45,7 +47,7 @@ void setup() {
   digitalWrite(led, 0);
 
   Serial.begin();
-  delay(1000);      // 1 second delay should be sufficient
+  delay(2000);      // 2 second delay should be sufficient
 
   // begin initialization
   if (!BLE.begin()) {

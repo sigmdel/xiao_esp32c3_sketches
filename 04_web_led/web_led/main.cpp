@@ -50,8 +50,8 @@ const long timeoutTime = 2000;
 
 void setup() {
   // Set the digital pin connected to the LED as an output
-  pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, 1-ledOn);
 
   Serial.begin();
   delay(2000);      // 2 second delay should be sufficient
@@ -93,7 +93,7 @@ void loop(){
             Serial.printf("Header: %s...\n", header.substring(0, n).c_str());
             bool is404 = false;
             if (header.indexOf("GET /?led=toggle ") >= 0) {
-              setLed(1 - digitalRead(led));
+              setLed(1 - digitalRead(ledPin));
             } else {
               is404 = (header.indexOf("GET / ") <0 ) && (header.indexOf("GET /index.htm") <0 );
             }
@@ -102,7 +102,7 @@ void loop(){
             else
               Serial.println("Valid request.");
             client.print(HttpResponses(is404));
-            client.print(HttpPage(is404, digitalRead(led)));
+            client.print(HttpPage(is404, digitalRead(ledPin)==ledOn));
             client.println(); // The HTTP response ends with another blank line
             // Break out of the while loop
             break;

@@ -1,6 +1,6 @@
 # XIAO ESP32C3 Arduino Sketches / PlatformIO Projects
 
-**Source code that accompanies the February 2023 version of [First Look at the Seeed Studio XIAO ESP32C3](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_intro_en.html)**.
+**Source code that accompanies the July 2024 revesion of [First Look at the Seeed Studio XIAO ESP32C3](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_intro_en.html)**.
 
 ![XIAO ESP32C3 Pinout](images/xiao_esp32c3_pinout.png) 
 
@@ -8,7 +8,7 @@
 
 The XIAO ESP32C3 is a recent addition to the Seeed Studio XIAO series of diminutive development boards. It is based on the Espressif ESP32-C3 SoC which, unlike other Espressif microcontrollers, has a RISC-V core.
 
-It should be possible to compile each project with PlatformIO, and with currently one exception, in the Arduino IDE and then upload them to the XIAO. There should be no unresolved dependencies. In other words, there should not be any need to install anything other than this repository. To make these sketches self-contained, private copies of all third-party libraries are included. Where a private library is included, only the necessary files were added. Please obtain the full library from the original source if it is to be used in another project.
+It should be possible to compile each project with PlatformIO or in the Arduino IDE and then upload them to the XIAO. There should be no unresolved dependencies. In other words, there should not be any need to install anything other than this repository. To make these sketches self-contained, private copies of all third-party libraries are included. Where a private library is included, only the necessary files were added. Please obtain the full library from the original source if it is to be used in another project.
 
 ## Arduino IDE Notes
 
@@ -47,14 +47,11 @@ All these projects except for `01_pin_names` control an external LED that is con
 | **07_ble_led** | Show the use of the `BLE` library contained in the ESP32 Arduino core |
 
 
-<!-- 
 ## Project Notes
 
-### 04_web_led
+In both `04_web_led`  and `05_web_led` the SSID and password for the Wi-Fi network must be provided in a file called `secrets.h` in the directory containing the source code. There is a model called `secrets.h.template` in the same directory that can be edited and saved under the correct name. A similar MicroPython web server script described in [12. MicroPython: Web Controlled LED](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_intro_en.html#web). In both cases, the XIAO ESP32C3 runs a Web server that makes it possible to toggle an external LED on and off through a Web interface. Something similar is described in [14. MicroPython: Web Controlled LED](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_intro_en.html#web) where the firmware is written in MicroPython. The source is available here: [upy_web_led.zip]("https://sigmdel.ca/michel/ha/xiao/dnld/upy_web_led.zip").
 
-This project/sketch is not discussed in [First Look at the Seeed Studio XIAO ESP32C3](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_intro_en.html). However, `04_web_led` is a C++ version of a similar MicroPython web server script described in [12. MicroPython: Web Controlled LED](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_intro_en.html#web). In both cases, the XIAO ESP32C3 runs a Web server that makes it possible to toggle an external LED on and off through a Web interface.
-The source code for the [12. MicroPython: Web Controlled LED](https://sigmdel.ca/michel/ha/xiao/xiao_esp32c3_intro_en.html#web) is available here: [upy_web_led.zip]("https://sigmdel.ca/michel/ha/xiao/dnld/upy_web_led.zip").
--->
+Projects `03_button_led` and `05_async_web_led` rely on third-party libraries. They are made available in the [libraries/](libraries) directory for use with the Arduino IDE without the need to install anything. In PlatformIO, private copies of the libraries will be automatically installed. 
 
 ## License
 

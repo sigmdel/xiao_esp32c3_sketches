@@ -53,6 +53,8 @@ In both `04_web_led`  and `05_web_led` the SSID and password for the Wi-Fi netwo
 
 Projects `03_button_led` and `05_async_web_led` rely on third-party libraries. They are made available in the [libraries/](libraries) directory for use with the Arduino IDE without the need to install anything. In PlatformIO, private copies of the libraries will be automatically installed. 
 
+It may be interesting to look at the [supermini_esp32c3_sketches](https://github.com/sigmdel/supermini_esp32c3_sketches) which are about a class of slightly bigger ESP32-C3 development boards. That repository contains slightly modified versions of projects such as `async_web_led` and . `ble_led2` These changes mean that the sketches can be used to investigate connectivity problems. It is well known that some of the boards on the market have problems with wireless communication which seem related to the circuit between the onboard ceramic antenna and the microcontroller.
+
 ## License
 
 Copyright 2023, 2024 Michel Deslierres. No rights reserved. 

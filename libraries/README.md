@@ -7,7 +7,7 @@ This directory contains additional libraries needed to compile two sketches.
 | 03_button_led | button_led.ino | [mdPushButton](https://github.com/sigmdel/mdPushButton) | 0.1.3 |
 | 06_async_web_led | async_web_led | [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer) | 1.2.4 |
 | 06_async_web_led | async_web_led | [AsyncTCP](https://github.com/me-no-dev/AsyncTCP/) | 1.1.1 |
- Unfortunately, the Arduino Library Manager does not handle these needed libraries. 
+ 
 Unfortunately, these libraries are not available in the Arduino Library Manager. Consequently, they are provided here. 
 
 ## Arduino IDE Configuration

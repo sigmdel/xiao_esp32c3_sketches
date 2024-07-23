@@ -57,8 +57,7 @@ void setup() {
   delay(2000);      // 2 second delay should be sufficient
 
   // Connect to Wi-Fi network with SSID and password
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
+  Serial.println("Connecting to the WiFi network");
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {

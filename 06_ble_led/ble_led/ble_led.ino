@@ -9,29 +9,21 @@
  *
  *  1- Add https://espressif.github.io/arduino-esp32/package_esp32_index.json
  *     in the Additional Boards Manager URLS in the Preferences window.
- *  2- Install platform esp32 by Espressif version 3.0.2 or newer with the Boards Manager
+ *  2- Install platform esp32 by Espressif version 3.3.6 or newer with the Boards Manager
  *  3- Select the XIAO_ESP32C3 board
  *  4- Install the ArduinoBLE (1.3.6 or newer) library with the Library Manager
  *  5- Temporarily move the directory ~/.arduino15/packages/esp32/hardware/esp32/3.0.1/libraries/BLE
  *     outside of the ~/.arduino15/ tree to avoid name conflicts 
  *
- * This project will compile in PlatformIO using the following platformio.ini file
- *
- *   [platformio]
- *   ; Make the Arduino IDE happy (.INO file must be in a directory of the same name)
- *   src_dir = blink_led
- *
- *   [env:seeed_xiao_esp32c3]
- *   board = seeed_xiao_esp32c3
- *   framework = arduino
- *   platform = espressif32
- *   monitor_speed = 460800
- *   lib_deps = arduino-libraries/ArduinoBLE@^1.3.2 
+ * Based on
+ *  XIAO ESP32C3 Bluetooth Tutorial, Range test, and Home Automation
+ *  @ https://www.electroniclinic.com/xiao-esp32c3-bluetooth-tutorial-range-test-and-home-automation/#XIAO_ESP32C3_Home_Automation
+ *  by Shahzada Fahad (Engr)
  *
  * Michel Deslierres
- * July 10, 2024
+ * Feb 10, 2026
  *
- * Copyright 2024, Michel Deslierres. No rights reserved, this code is in the public domain.
+ * Copyright 2024-2026, Michel Deslierres. No rights reserved, this code is in the public domain.
  * In those jurisdictions where this may be a problem, the BSD Zero Clause License applies.
  * <https://spdx.org/licenses/0BSD.html> */
- // SPDX-License-Identifier: 0BSD
+// SPDX-License-Identifier: 0BSD

@@ -1,25 +1,17 @@
-// Main module of ble_led PlatformIO/Arduino sketch
-// Copyright: see notice in ble_led.ino
-
 /*
- * Bluetooth (LE) controled LED sketch for XIAO ESP32C3 in platformIO
- * Based on
- *  XIAO ESP32C3 Bluetooth Tutorial, Range test, and Home Automation
- *  @ https://www.electroniclinic.com/xiao-esp32c3-bluetooth-tutorial-range-test-and-home-automation/#XIAO_ESP32C3_Home_Automation
- *  by Shahzada Fahad (Engr)
- *
- * Turn LED on/off with either of the following Androi/IOS app:
- *  nRF Connect for Mobile
- *    Android: https://play.google.com/store/apps/details?id=no.nordicsemi.android.mcp&gl=US
- *    IOS: https://apps.apple.com/us/app/nrf-connect-for-mobile/id1054362403
- * or
- *  LightBlue
- *    Android: https://play.google.com/store/apps/details?id=com.punchthrough.lightblueexplorer&gl=US
- *    IOS: https://apps.apple.com/us/app/lightblue/id557428110
+ *  See ble_led.ino for license and attribution.
  */
 
 #include <Arduino.h>
 #include <ArduinoBLE.h>
+
+#if !defined(ARDUINO_XIAO_ESP32C3)
+  #error This program is meant to run on the XIAO ESP32C3 only
+#endif
+
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))    
+  #warning Version 3.3.6 or newer of ESP32 Arduino core version is available
+#endif
 
 // Connecting an external LED:
 //  The diode's cathode (-, usually the short lead on the flat side of the LED) is connected to GND.
@@ -42,19 +34,29 @@ BLEService ledService("19B10000-E8F2-537E-4F6C-D104768A1214");
 BLEByteCharacteristic switchCharacteristic("19B10001-E8F2-537E-4F6C-D104768A1214", BLERead | BLEWrite);
 
 void setup() {
-  // Set the digital pin connected to the LED as an output
-  pinMode(led, OUTPUT);
-  digitalWrite(led, 0);
-
   Serial.begin();
-  delay(2000);      // 2 second delay should be sufficient
+  // Delay to allow for the initialization of the native USB peripheral
+  // and some time for the IDE to reconnect 
+  #ifdef PLATFORMIO
+  delay(8000); // 8 seconds
+  #else
+  delay(2000); // 2 seconds
+  #endif
+
+  Serial.println("\n\nProject: ble_led.ino");
+  Serial.println("Purpose: Toggle an external LED on and off with Bluetooth");
+  Serial.println("  Board: XIAO ESP32C3");
 
   // begin initialization
+
+  Serial.println("\nInitializing LED");
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, 1-ledOn);
+
   if (!BLE.begin()) {
     Serial.println("Could not start Bluetooth® Low Energy module!");
     while (1);
   }
-
   Serial.println("Bluetooth® Low Energy (BLE) module started.");
 
   // set advertised local name and service UUID:
@@ -68,11 +70,19 @@ void setup() {
   BLE.addService(ledService);
   // set the initial value for the characeristic, i.e. LED off
   switchCharacteristic.writeValue(0);
-  Serial.println("LED service added.");
+  Serial.println("\nLED service added.");
 
   BLE.advertise();
   Serial.println("\"HOME Automation\" device now being advertised");
   Serial.println("Setup completed.");
+
+  Serial.println("\nTurn the attached LED on/off with a smartphone applications such as");
+  Serial.println("\n  nRF Connect for Mobile by Nordic Semiconductor ASA");
+  Serial.println("    Android: https://play.google.com/store/apps/details?id=no.nordicsemi.android.mcp");
+  Serial.println("    IOS: https://apps.apple.com/us/app/nrf-connect-for-mobile/id1054362403");
+  Serial.println("\n  LightBlue - Bluetooth LE by Punch Through Design");
+  Serial.println("    Android: https://play.google.com/store/apps/details?id=com.punchthrough.lightblueexplorer");
+  Serial.println("    IOS: https://apps.apple.com/us/app/lightblue/id557428110");
 }
 
 

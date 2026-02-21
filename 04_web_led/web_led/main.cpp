@@ -1,22 +1,19 @@
-// Main module of web_led PlatformIO/Arduino sketch
-// Copyright: see notice in web_led.ino
-
 /*
- * Web controled LED sketch for XIAO ESP32C3 in platformIO
- * Based on
- *   SimpleWiFiServer.ino
- *    @ https://github.com/espressif/arduino-esp32/blob/master/libraries/WiFi/examples/SimpleWiFiServer/SimpleWiFiServer.ino
- *   by Tom Igoe and Jan Hendrik Berlin
- * and
- *   ESP32 Web server based Home automation circuit diagram and programming
- *    @ https://www.electroniclinic.com/esp32-web-server-based-home-automation-circuit-diagram-and-programming/
- *   by Shahzada Fahad (Engr)
+ *  See web_led.ino for license and attribution.
  */
 
 #include <Arduino.h>     // Needed in PlatformIO
 #include <WiFi.h>
 #include "secrets.h"     // Edit secrets.h.template and save as secrets.h
 #include "webresponses.h"
+
+#if !defined(ARDUINO_XIAO_ESP32C3)
+  #error This program is meant to run on the XIAO ESP32C3 only
+#endif
+
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))    
+  #warning Version 3.3.6 or newer of ESP32 Arduino core version is available
+#endif
 
 // Connecting an external LED:
 //  The diode's cathode (-, usually the short lead on the flat side of the LED) is connected to GND.
@@ -49,12 +46,22 @@ unsigned long previousTime = 0;
 const long timeoutTime = 2000;
 
 void setup() {
+  Serial.begin();
+  // Delay to allow for the initialization of the native USB peripheral
+  // and some time for the IDE to reconnect 
+  #ifdef PLATFORMIO
+  delay(8000); // 8 seconds
+  #else
+  delay(2000); // 2 seconds
+  #endif
+
+  Serial.println("\n\nProject: web_led.ino");
+  Serial.println("Purpose: Toggle an external LED on and off with a Web interface");
+  Serial.println("  Board: XIAO ESP32C3");
+
   // Set the digital pin connected to the LED as an output
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, 1-ledOn);
-
-  Serial.begin();
-  delay(2000);      // 2 second delay should be sufficient
 
   // Connect to Wi-Fi network with SSID and password
   Serial.println("Connecting to the WiFi network");

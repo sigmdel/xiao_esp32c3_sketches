@@ -1,17 +1,19 @@
-// Main module of pin_names Platformio/Arduino sketch
-// Copyright: see notice in pin_names.ino
-
-// The XIAO ESP32C3 pin definitions are found in
-// Arduino:
-//   ~/.arduino15/packages/esp32/hardware/esp32/3.0.2/variants/XIAO_ESP32C3/pins_arduino.h
-// PlatformIO:
-//   ~/.platformio/packages/framework-arduinoespressif32/variants/XIAO_ESP32C3/pins_arduino.h
+/*
+ *  See pin_names.ino for license and attribution.
+ */
 
 #include <Arduino.h>
 
-void iopins(void) {
-  Serial.println("\n\nXIAO ESP32C3 I/O Pin Names and Numbers");
+#if !defined(ARDUINO_XIAO_ESP32C3)
+  #error This program is meant to run on the XIAO ESP32C3 only
+#endif
 
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))    
+  #warning Version 3.3.6 or newer of ESP32 Arduino core version is available
+#endif
+
+void iopins(void) {
+  Serial.println("\n\nXIAO ESP32C3 I/O pins and macros");
   Serial.println("\nThe symbolic name and corresponding I/O number of the 11 digital pins");
   Serial.printf(" D0 = %2d\n", D0);
   Serial.printf(" D1 = %2d\n", D1);
@@ -31,33 +33,121 @@ void iopins(void) {
   Serial.printf(" A2 = %d\n", A2);
   Serial.println("Note: Ax = Dx for x = 0, 1 and 2");
 
-  Serial.println("\nThe symbolic name and corresponding I/O number of the 7 serial pins");
+  Serial.println("\nThe symbolic name and corresponding I/O number of the 8 serial pins");
   Serial.printf("  TX = %2d [UART] (=D6)\n", TX);
   Serial.printf("  RX = %2d [UART] (=D7)\n", RX);
-
   Serial.printf(" SDA = %2d [I2C]  (=D4)\n", SDA);
   Serial.printf(" SCL = %2d [I2C]  (=D5)\n", SCL);
-
   Serial.printf("  SS = %2d [SPI]  (=D7)\n", SS);
   Serial.printf("MOSI = %2d [SPI]  (=D10)\n", MOSI);
   Serial.printf("MISO = %2d [SPI]  (=D9)\n", MISO);
-  Serial.printf(" SCK = %2d [SPI]  (=D8)\n", SCK);
+  Serial.printf(" SCK = %2d [SPI]  (=D8)\n\n", SCK);
 
-  Serial.println("\nBoard macro");
-  #ifdef ARDUINO_XIAO_ESP32C3
-  Serial.println("ARDUINO_XIAO_ESP32C3 defined");
+  #ifdef LED_BUILTIN
+  Serial.printf("LED_BUILTIN = %d\n", LED_BUILTIN);
   #else
-  Serial.println("ARDUINO_XIAO_ESP32C3 not defined");
+  Serial.println("LED_BUILTIN is not defined - no onboard LED");
   #endif
+  #ifdef BUILTIN_LED
+  Serial.printf("BUILTIN_LED = %d //deprecated, use LED_BUILTIN\n", BUILTIN_LED);
+  #else
+  Serial.println("BUILTIN_LED is not defined - no onboard LED");
+  #endif
+
+  Serial.println("\nOther macro defined in esp32-hal.h");
+  #ifdef BOOT_PIN
+  Serial.println("\nOnboard boot button");
+  Serial.printf("BOOT_PIN = %2d\n", BOOT_PIN);
+  #endif
+
+  
+  Serial.println("\nBuild macros");
+ 
+  #ifdef PLATFORMIO
+  Serial.printf("PLATFORMIO = %d\n", PLATFORMIO);
+  #else
+    Serial.println("PLATFORMIO not defined"); // must be in Arduino IDE
+  #endif    
+ 
+  #ifdef ARDUINO 
+  Serial.printf("ARDUINO = %d\n", ARDUINO);
+  #else
+    #error ARDUINO should be defined
+  #endif
+ 
+  #ifdef ESP_PLATFORM
+  Serial.println("ESP_PLATFORM");
+  #else
+    #error ESP32_PLATFORM should be defined
+  #endif
+ 
+  #ifdef ESP32  // already verified
+  Serial.println("ESP32");
+  #else
+    #error ESP32 should be defined
+  #endif
+ 
+  #ifdef IDF_VER
+  Serial.printf("IDF_VER = \"%s\"\n", IDF_VER);
+  #else
+    #error IDF_VER should be defined
+  #endif  
+ 
+  #ifdef ARDUINO_ARCH_ESP32
+  Serial.println("ARDUINO_ARCH_ESP32");
+  #else
+    #error ARDUINO_ARCH_ESP32 should be defined
+  #endif
+  
+  #ifdef ARDUINO_BOARD
+  Serial.printf("ARDUINO_BOARD = \"%s\"\n", ARDUINO_BOARD);
+  #else
+    #error  ARDUINO_BOARD should be defined
+  #endif
+
+  #ifdef ARDUINO_VARIANT
+  Serial.printf("ARDUINO_VARIANT = \"%s\"\n", ARDUINO_VARIANT);
+  #else
+    #error  ARDUINO_VARIANT should be defined
+  #endif
+
+  #ifdef ARDUINO_XIAO_ESP32C3
+  Serial.println("ARDUINO_XIAO_ESP32C3");
+  #else
+    #error ARDUINO_XIAO_ESP32C3 should be defined
+  #endif
+
+
+  #ifdef ARDUINO_USB_CDC_ON_BOOT 
+  Serial.printf("ARDUINO_USB_CDC_ON_BOOT = %d\n", ARDUINO_USB_CDC_ON_BOOT);
+  #else
+    #error ARDUINO_USB_CDC_ON_BOOT=1 should be defined
+  #endif                                                       
+
+  #ifdef ARDUINO_USB_MODE 
+  Serial.printf("ARDUINO_USB_MODE = %d\n", ARDUINO_USB_MODE);
+  #else
+    #error ARDUINO_USB_MODE=1 should be defined
+  #endif                                                        
 }
 
 void setup() {
+  // Delay to allow for the initialization of the native USB peripheral
+  // and some time for the IDE to reconnect 
+  #if defined(PLATFORMIO)
+    #define SERIAL_BEGIN_DELAY 8000    // 8 seconds
+  #else
+    #define SERIAL_BEGIN_DELAY 2000    // 2 second
+  #endif 
+
   Serial.begin();
-  delay(2000); // 2 second delay should be sufficient for USB-CDC
-  Serial.println("Setup completed");
+  delay(SERIAL_BEGIN_DELAY);
+  Serial.println("\n\nProject: pin_names.ino");
+  Serial.println("Purpose: Print I/O Pin Names, GPIO Numbers, Macros etc.");
+  Serial.println("  Board: XIAO ESP32C3");
 }
 
 void loop() {
   iopins();
-  delay(10000); // wait 10 seconds
+  delay(15000); // wait 15 seconds
 }

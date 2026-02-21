@@ -1,10 +1,19 @@
-// Main module of ble_led PlatformIO/Arduino sketch
-// Copyright: see notice in ble_led.ino
+/*
+ *  See ble_led.ino for license and attribution.
+ */
 
 #include <Arduino.h>
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
+
+#if !defined(ARDUINO_XIAO_ESP32C3)
+  #error This program is meant to run on the XIAO ESP32C3 only
+#endif
+
+#if (ESP_ARDUINO_VERSION < ESP_ARDUINO_VERSION_VAL(3, 3, 6))    
+  #warning Version 3.3.6 or newer of ESP32 Arduino core version is available
+#endif
 
 // Connecting an external LED:
 //  The diode's cathode (-, usually the short lead on the flat side of the LED) is connected to GND.
@@ -79,16 +88,29 @@ class WriteCallbacks : public BLECharacteristicCallbacks {
 
 void setup() {
   Serial.begin();
-  delay(2000);
+  // Delay to allow for the initialization of the native USB peripheral
+  // and some time for the IDE to reconnect 
+  #ifdef PLATFORMIO
+  delay(8000); // 8 seconds
+  #else
+  delay(2000); // 2 seconds
+  #endif
 
-  Serial.println("Setup");
+  Serial.println("\n\nProject: ble_led.ino");
+  Serial.println("Purpose: Toggle an external LED on and off with Bluetooth");
+  Serial.println("  Board: XIAO ESP32C3");
 
-  Serial.println("Initializing LED");
+  // begin initialization
+
+  Serial.println("\nInitializing LED");
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, 1-ledOn);
 
-  Serial.println("Initializing BLEDevice");
-  BLEDevice::init(BLUETOOTH_NAME);
+  if (!BLEDevice::init(BLUETOOTH_NAME)) {
+    Serial.println("Could not start Bluetooth® Low Energy device!");
+    while (1);
+  }
+  Serial.println("Bluetooth® Low Energy (BLE) device started.");
 
   Serial.println("Creating a BLE server");
   pServer = BLEDevice::createServer();
@@ -101,6 +123,7 @@ void setup() {
   pCharacteristic = pService->createCharacteristic(
                       CHARACTERISTIC_UUID,
                       BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+  pCharacteristic->setValue(String("off"));
   pCharacteristic->setCallbacks(new WriteCallbacks);
 
   Serial.println("Starting BLE service");
@@ -118,12 +141,23 @@ void setup() {
   Serial.println(BLUETOOTH_NAME);
   Serial.print("Address: ");
   Serial.println(BLEDevice::getAddress().toString().c_str());
+
+  Serial.printf("\n\"%s\" device now being advertised\n", BLUETOOTH_NAME);
+  Serial.println("Setup completed.");
+
+  Serial.println("\nTurn the attached LED on/off with a smartphone applications such as");
+  Serial.println("\n  nRF Connect for Mobile by Nordic Semiconductor ASA");
+  Serial.println("    Android: https://play.google.com/store/apps/details?id=no.nordicsemi.android.mcp");
+  Serial.println("    IOS: https://apps.apple.com/us/app/nrf-connect-for-mobile/id1054362403");
+  Serial.println("\n  LightBlue - Bluetooth LE by Punch Through Design");
+  Serial.println("    Android: https://play.google.com/store/apps/details?id=com.punchthrough.lightblueexplorer");
+  Serial.println("    IOS: https://apps.apple.com/us/app/lightblue/id557428110");
 }
 
 unsigned long timer = 0;
 
 void loop() {
-  if (millis() - timer > 5000) {
+  if (millis() - timer > 10000) {
     Serial.println(" - loop busy work");
     timer = millis();
   }

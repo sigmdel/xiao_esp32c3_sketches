@@ -29,7 +29,7 @@
 
 The XIAO ESP32C3 is a relatively recent addition to the [Seeed Studio XIAO series](https://www.seeedstudio.com/xiao-series-page) of diminutive development boards. It is based on the Espressif ESP32-C3 SoC which has a RISC-V core.
 
-It should be possible to compile each project with PlatformIO or in the Arduino IDE without any need to install anything other than this repository.
+It should be possible to compile each project on the Arduino IDE or pioarduino IDE without any need to install anything other than this repository.
 
 ## 2. Arduino IDE Notes
 

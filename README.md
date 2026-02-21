@@ -74,7 +74,7 @@ lib_dir = ../libraries
 
 ## 4. List of Projects      
 
-Except for `01_pin_names`, these projects control an external LED that is connected to one of the I/O pins of the XIAO ESP32C3.
+Except for `00_sys_info` and `01_pin_names`, these projects control an external LED that is connected to one of the I/O pins of the XIAO ESP32C3.
 
 | Project | Purpose |
 | ---     | ---    
@@ -84,8 +84,9 @@ Except for `01_pin_names`, these projects control an external LED that is connec
 | **03_button_led** | Use `digitalWrite` and `digitalRead` to toggle a LED on and off. |
 | **04_web_led** | Use a Web server to toggle a LED on and off. |
 | **05_async_web_led** | Use an asyncronous Web server to toggle a LED on and off. |
-| **06_ble_led** | Use Bluetooth to toggle a LED on and off with the `ArduinoBLE` library |
-| **07_ble_led** | Use Bluetoooth to toggle a LED on and off with the ESP32 Arduino core `BLE` librariers |
+| **06_ble_led** | Use Bluetooth to toggle a LED on and off with the `ArduinoBLE` library. |
+| **07_ble_led** | Use Bluetoooth to toggle a LED on and off with the ESP32 Arduino core `BLE` libraries. |
+| **08_pulse_led** | Use `analogWrite` to pulse a LED attached to any I/O pad of the XIAO (pulse width modulation). |
 
 
 ## 5. Project Notes
